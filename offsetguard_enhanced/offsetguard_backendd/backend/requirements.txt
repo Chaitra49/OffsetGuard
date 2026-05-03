@@ -1,0 +1,32 @@
+# OffsetGuard Backend — Python dependencies
+# Install with: pip install -r requirements.txt
+
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+
+# Deep learning & YOLO
+torch==2.3.0
+torchvision==0.18.0
+ultralytics==8.2.18
+
+# Blockchain
+web3==6.20.0
+
+# Google Earth Engine + geospatial
+earthengine-api==0.1.409
+geemap==0.32.2
+
+# Image processing
+Pillow==10.3.0
+numpy==1.26.4
+opencv-python-headless==4.9.0.80
+
+# HTTP client (used in YOLO endpoint for image_url)
+requests==2.32.2
+
+# Env config
+python-dotenv==1.0.1
+
+# Multipart form support (FastAPI dependency)
+python-multipart==0.0.9
