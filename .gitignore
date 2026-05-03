@@ -81,3 +81,6 @@ Thumbs.db
 output/
 results/
 exports/
+
+artifacts/
+cache/
