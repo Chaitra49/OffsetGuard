@@ -346,12 +346,6 @@ Contributions, bug reports, and feature requests are welcome.
 
 ---
 
-# 📄 License
-
-This project is licensed under the MIT License.
-
----
-
 ## 👥 Authors
 
 Developed as part of the **OffsetGuard** project for AI-powered carbon offset verification using Computer Vision, Remote Sensing, and Blockchain.
