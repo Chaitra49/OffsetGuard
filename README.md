@@ -1,61 +1,264 @@
-# OffsetGuard — Backend + Blockchain (Ganache)
+# 🌱 OffsetGuard
 
-## Step 1 — Start Ganache
+**OffsetGuard** is an AI-powered carbon offset verification platform that combines **computer vision**, **satellite imagery analysis**, and **blockchain technology** to verify tree plantations and issue tamper-proof NFT certificates.
 
-**Ganache GUI:** Open app → Quickstart. Note RPC Server (default `http://127.0.0.1:7545`) and Chain ID (default `1337`). Click the 🔑 key icon next to any account to copy its private key.
+The system uses **YOLO** for tree detection, **Google Earth Engine (GEE)** for NDVI-based plantation verification, and **Ethereum smart contracts** (deployed locally on Ganache) to mint ERC-721 NFTs representing verified carbon offset projects.
 
-**ganache CLI:**
+---
+
+## ✨ Features
+
+- 🌳 AI-based tree detection using YOLO
+- 🛰️ Plantation verification using Google Earth Engine (NDVI)
+- ⛓️ ERC-721 NFT minting on Ethereum (Ganache)
+- 🔒 Immutable verification records on blockchain
+- 🚀 REST API built with FastAPI
+- 📄 Interactive API documentation via Swagger UI
+
+---
+
+## 🏗️ Project Structure
+
+```text
+offsetguard_enhanced/
+|
+OffsetGuard/
+│
+├── backend/                 
+│   ├── models/
+│   ├── main.py
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── blockchain/              
+│   ├── contracts/
+│   ├── scripts/
+│   ├── test/
+│   ├── hardhat.config.js
+│   └── .env.example
+│
+└── README.md
+```
+
+---
+
+# 🛠️ Tech Stack
+
+### Backend
+
+- FastAPI
+- Python
+- Uvicorn
+
+### AI & Computer Vision
+
+- YOLO
+- OpenCV
+- PyTorch
+
+### Remote Sensing
+
+- Google Earth Engine (GEE)
+- NDVI Analysis
+
+### Blockchain
+
+- Solidity
+- Hardhat
+- Ganache
+- Ethers.js
+- ERC-721 NFT Standard
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+Before running the project, ensure you have installed:
+
+- Python 3.10+
+- Node.js
+- npm
+- Ganache GUI or Ganache CLI
+- Git
+
+---
+
+# 1️⃣ Start Ganache
+
+## Option A — Ganache GUI
+
+1. Open Ganache.
+2. Create or open a workspace.
+3. Start the blockchain.
+4. Note the following:
+
+```
+RPC URL
+http://127.0.0.1:7545
+
+Chain ID
+1337
+```
+
+Click the 🔑 icon beside an account to copy its private key.
+
+---
+
+## Option B — Ganache CLI
+
 ```bash
 npm install -g ganache
+
 ganache --port 8545 --chain.chainId 1337
 ```
 
 ---
 
-## Step 2 — Deploy the Smart Contract
+# 2️⃣ Deploy the Smart Contract
+
+Navigate to the blockchain project.
 
 ```bash
 cd blockchain
+
 npm install
-cp .env.example .env          # fill GANACHE_URL, GANACHE_CHAIN_ID, OWNER_PRIVATE_KEY
-npm run compile
-npm test                       # runs on built-in Hardhat node, no Ganache needed
-npm run deploy:ganache         # deploys to your running Ganache
 ```
 
-Output will print:
+Create the environment file.
+
+```bash
+cp .env.example .env
 ```
+
+Update the following values:
+
+```env
+GANACHE_URL=http://127.0.0.1:7545
+GANACHE_CHAIN_ID=1337
+OWNER_PRIVATE_KEY=YOUR_PRIVATE_KEY
+```
+
+Compile the smart contracts.
+
+```bash
+npm run compile
+```
+
+Run tests.
+
+```bash
+npm test
+```
+
+Deploy to Ganache.
+
+```bash
+npm run deploy:ganache
+```
+
+After deployment you'll receive an output similar to:
+
+```text
 CONTRACT_ADDRESS=0xABC123...
+
 POLYGON_RPC_URL=http://127.0.0.1:7545
+
 NETWORK_NAME=ganache
 ```
-Copy those into `backend/.env`.
+
+Copy the **CONTRACT_ADDRESS** into the backend `.env` file.
 
 ---
 
-## Step 3 — Run the Backend
+# 3️⃣ Run the Backend
+
+Navigate to the backend directory.
 
 ```bash
 cd backend
-python -m venv venv && source venv/bin/activate
+```
+
+Create a virtual environment.
+
+### Linux/macOS
+
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+### Windows
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+Install dependencies.
+
+```bash
 pip install -r requirements.txt
-cp .env.example .env           # paste CONTRACT_ADDRESS, OWNER_PRIVATE_KEY, OWNER_ADDRESS
-cp /path/to/best.pt models/best.pt
-uvicorn main:app --reload      # http://localhost:8000  |  docs: /docs
+```
+
+Create the environment file.
+
+```bash
+cp .env.example .env
+```
+
+Update the values.
+
+```env
+CONTRACT_ADDRESS=YOUR_CONTRACT_ADDRESS
+
+GANACHE_URL=http://127.0.0.1:7545
+
+OWNER_PRIVATE_KEY=YOUR_PRIVATE_KEY
+
+OWNER_ADDRESS=YOUR_ACCOUNT_ADDRESS
+```
+
+Place your trained YOLO model inside:
+
+```
+backend/models/best.pt
+```
+
+Run the server.
+
+```bash
+uvicorn main:app --reload
+```
+
+The API will be available at
+
+```
+http://localhost:8000
+```
+
+Swagger Documentation
+
+```
+http://localhost:8000/docs
 ```
 
 ---
 
-## API Endpoints
+# 📡 API Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/verify-plantation` | GEE NDVI plantation verification |
-| `POST` | `/run-yolo` | Tree detection with YOLO |
-| `POST` | `/mint-nft` | Mint ERC-721 on Ganache |
-| `GET`  | `/health` | Health check |
+|---------|----------|-------------|
+| POST | `/verify-plantation` | Verify plantation using GEE NDVI |
+| POST | `/run-yolo` | Detect trees using YOLO |
+| POST | `/mint-nft` | Mint ERC-721 NFT certificate |
+| GET | `/health` | Health check |
 
-### /mint-nft body (JSON)
+---
+
+## Example Request — `/mint-nft`
+
 ```json
 {
   "company_name": "GreenTech Corp",
@@ -70,20 +273,85 @@ uvicorn main:app --reload      # http://localhost:8000  |  docs: /docs
 
 ---
 
-## Environment Variables
+# ⚙️ Environment Variables
 
-### backend/.env
+## backend/.env
+
 | Variable | Description |
 |----------|-------------|
-| `YOLO_MODEL_PATH` | Path to YOLO `.pt` weights (default: `models/best.pt`) |
-| `GANACHE_URL` | Ganache RPC (default: `http://127.0.0.1:7545`) |
-| `CONTRACT_ADDRESS` | From deploy script output |
-| `OWNER_PRIVATE_KEY` | Ganache account private key |
-| `OWNER_ADDRESS` | Ganache account address |
+| YOLO_MODEL_PATH | Path to YOLO model (`models/best.pt`) |
+| GANACHE_URL | Ganache RPC URL |
+| CONTRACT_ADDRESS | Deployed smart contract address |
+| OWNER_PRIVATE_KEY | Ganache wallet private key |
+| OWNER_ADDRESS | Ganache wallet address |
 
-### blockchain/.env
+---
+
+## blockchain/.env
+
 | Variable | Description |
 |----------|-------------|
-| `GANACHE_URL` | Ganache RPC URL |
-| `GANACHE_CHAIN_ID` | Chain ID from Ganache (default: `1337`) |
-| `OWNER_PRIVATE_KEY` | Ganache account private key |
+| GANACHE_URL | Ganache RPC URL |
+| GANACHE_CHAIN_ID | Ganache Chain ID |
+| OWNER_PRIVATE_KEY | Ganache wallet private key |
+
+---
+
+# 📜 Workflow
+
+```text
+Satellite Image
+        │
+        ▼
+Google Earth Engine
+   (NDVI Verification)
+        │
+        ▼
+YOLO Tree Detection
+        │
+        ▼
+Verification Result
+        │
+        ▼
+Smart Contract
+        │
+        ▼
+ERC-721 NFT Minted
+        │
+        ▼
+Immutable Carbon Offset Certificate
+```
+
+---
+
+# 📌 Future Improvements
+
+- Deploy contracts on Polygon Amoy/Mainnet
+- IPFS metadata storage
+- Wallet authentication (MetaMask)
+- Interactive dashboard
+- Carbon credit analytics
+- Multi-user support
+
+---
+
+# 🤝 Contributing
+
+Contributions, bug reports, and feature requests are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Open a Pull Request.
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👥 Authors
+
+Developed as part of the **OffsetGuard** project for AI-powered carbon offset verification using Computer Vision, Remote Sensing, and Blockchain.
